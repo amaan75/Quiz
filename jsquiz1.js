@@ -1,4 +1,4 @@
-(function() {
+(function () {
   var questions = [{
     question: "What is 2*5?",
     choices: [2, 5, 10, 15, 20],
@@ -20,33 +20,27 @@
     choices: [20, 30, 40, 50, 64],
     correctAnswer: 4
   }];
- var slider = document.getElementById("myRange");
-var no_questions = document.getElementById("no_questions");
-slider.step=5;
-no_questions.innerHTML = slider.value; // Display the default slider value
 
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = function() {
-    no_questions.innerHTML = this.value;
-}	
-localStorage.setItem("slider_value",slider);
+
+  var maxQuestions = localStorage.getItem("slider_value");
+alert(maxQuestions);
   var questionCounter = 0; //Tracks question number
   var selections = []; //Array containing user choices
   var quiz = $('#quiz'); //Quiz div object
-  
+
   // Display initial question
   displayNext();
-  
+
   // Click handler for the 'next' button
   $('#next').on('click', function (e) {
     e.preventDefault();
-    
+
     // Suspend click listener during fade animation
-    if(quiz.is(':animated')) {        
+    if (quiz.is(':animated')) {
       return false;
     }
     choose();
-    
+
     // If no user selection, progress is stopped
     if (isNaN(selections[questionCounter])) {
       alert('Please make a selection!');
@@ -55,32 +49,32 @@ localStorage.setItem("slider_value",slider);
       displayNext();
     }
   });
-  
+
   // Click handler for the 'prev' button
   $('#prev').on('click', function (e) {
     e.preventDefault();
-    
-    if(quiz.is(':animated')) {
+
+    if (quiz.is(':animated')) {
       return false;
     }
     choose();
     questionCounter--;
     displayNext();
   });
-  
+
   // Click handler for the 'Start Over' button
   $('#start').on('click', function (e) {
     e.preventDefault();
-    
-    if(quiz.is(':animated')) {
+
+    if (quiz.is(':animated')) {
       return false;
     }
     questionCounter = 0;
     selections = [];
     displayNext();
-   
+
   });
-  
+
   // Animates buttons on hover
   $('.button').on('mouseenter', function () {
     $(this).addClass('active');
@@ -88,26 +82,26 @@ localStorage.setItem("slider_value",slider);
   $('.button').on('mouseleave', function () {
     $(this).removeClass('active');
   });
-  
+
   // Creates and returns the div that contains the questions and 
   // the answer selections
   function createQuestionElement(index) {
     var qElement = $('<div>', {
       id: 'question'
     });
-    
+
     var header = $('<h2>Question ' + (index + 1) + ':</h2>');
     qElement.append(header);
-    
+
     var question = $('<p>').append(questions[index].question);
     qElement.append(question);
-    
+
     var radioButtons = createRadios(index);
     qElement.append(radioButtons);
-    
+
     return qElement;
   }
-  
+
   // Creates a list of the answer choices as radio inputs
   function createRadios(index) {
     var radioList = $('<ul>');
@@ -122,33 +116,33 @@ localStorage.setItem("slider_value",slider);
     }
     return radioList;
   }
-  
+
   // Reads the user selection and pushes the value to an array
   function choose() {
     selections[questionCounter] = +$('input[name="answer"]:checked').val();
   }
-  
+
   // Displays next requested element
   function displayNext() {
-    quiz.fadeOut(function() {
+    quiz.fadeOut(function () {
       $('#question').remove();
-      
-      if(questionCounter < questions.length){
+
+      if (questionCounter < questions.length) {
         var nextQuestion = createQuestionElement(questionCounter);
         quiz.append(nextQuestion).fadeIn();
         if (!(isNaN(selections[questionCounter]))) {
-          $('input[value='+selections[questionCounter]+']').prop('checked', true);
+          $('input[value=' + selections[questionCounter] + ']').prop('checked', true);
         }
-        
+
         // Controls display of 'prev' button
-        if(questionCounter === 1){
+        if (questionCounter === 1) {
           $('#prev').show();
-        } else if(questionCounter === 0){
-          
+        } else if (questionCounter === 0) {
+
           $('#prev').hide();
           $('#next').show();
         }
-      }else {
+      } else {
         var scoreElem = displayScore();
         quiz.append(scoreElem).fadeIn();
         $('#next').hide();
@@ -157,22 +151,21 @@ localStorage.setItem("slider_value",slider);
       }
     });
   }
-  
+
   // Computes score and returns a paragraph element to be displayed
   function displayScore() {
-    var score = $('<p>',{id: 'question'});
-    
+    var score = $('<p>', { id: 'question' });
+
     var numCorrect = 0;
     for (var i = 0; i < selections.length; i++) {
       if (selections[i] === questions[i].correctAnswer) {
-        numCorrect=+5;
+        numCorrect = +5;
       }
     }
-    
-    score.append('You score is ' + numCorrect );
+
+    score.append('You score is ' + numCorrect);
     return score;
   }
 })();
- 
 
- 
+
